@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!-- ○ From 'lib.kingja.switchbutton:switchbutton:1.1.8' 라이브러리 at https://github.com/KingJA/SwitchButton -->
+        <lib.kingja.switchbutton.SwitchMultiButton
+            android:id="@+id/switchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:padding="8dp"
+            android:layout_gravity="center_horizontal"
+            app:strokeRadius="5dp"
+            app:strokeWidth="1dp"
+            app:selectedTab="0"
+            app:selectedColor="#eb7b00"
+            app:switchTabs="@array/switch_tabs"
+            app:textSize="14sp" />
+
+    </LinearLayout>
+
+
+
+
+
+
+
+</LinearLayout>
+
