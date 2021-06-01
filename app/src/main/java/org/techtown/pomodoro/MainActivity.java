@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     StopWatchFragment stopWatchFragment;
     TimerFragment timerFragment;
 
+    public int total_time = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     // #############################################################################################
-
 
     @Override
     protected void onDestroy() {
