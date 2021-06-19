@@ -5,15 +5,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StopWatchFragment extends Fragment {
 
@@ -32,6 +37,11 @@ public class StopWatchFragment extends Fragment {
     // 스톱워치의 총 시간을 저장할 변수
     private long storeTime = 0;
 
+    MediaPlayer mediaPlayer;
+    int pausePosition;
+    String sound;
+    boolean sound_pass;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,6 +58,11 @@ public class StopWatchFragment extends Fragment {
 
         bt_stopwatch_start.setOnClickListener(onClickListener);
         bt_stopwatch_save.setOnClickListener(onClickListener);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sound = preferences.getString("sound_list", "sound1");
+        sound_pass = preferences.getBoolean("sound_activate", false);
+        mediaPlayer = null;
 
         return rootView;
     }
@@ -79,6 +94,9 @@ public class StopWatchFragment extends Fragment {
 
                 status = RUN;  // 스톱워치가 "실행 중인 상태"로 전환
 
+                if(sound_pass == true) {
+                    playMusic();
+                }
                 break;
 
             case RUN:  // 스톱 워치가 "실행되고 있는 상태"일 때 [ 중지 ] 버튼을 누르면,
@@ -90,6 +108,10 @@ public class StopWatchFragment extends Fragment {
                 bt_stopwatch_start.setText("계속");
 
                 status = PAUSE;  // "중지 상태"로 전환
+
+                if(sound_pass == true) {
+                    pauseMusic();
+                }
 
                 break;
 
@@ -103,6 +125,10 @@ public class StopWatchFragment extends Fragment {
                 bt_stopwatch_save.setEnabled(false);
 
                 status = RUN;  // "진행 중인 상태"로 전환
+
+                if(sound_pass == true) {
+                    playMusic();
+                }
 
                 break;
         }
@@ -124,13 +150,13 @@ public class StopWatchFragment extends Fragment {
             int second = time % 60;
 
             if(hour != 0) {
-                total_time.setText("총 공부 시간  " + String.format("%d시간 %d분 %d초", hour, minute, second));
+                total_time.setText(String.format("%d시간 %d분 %d초", hour, minute, second));
             }
             else if((hour == 0) && (minute != 0)) {
-                total_time.setText("총 공부 시간  " + String.format("%d분 %d초", minute, second));
+                total_time.setText(String.format("%d분 %d초", minute, second));
             }
             else {
-                total_time.setText("총 공부 시간  " + String.format("%d초", second));
+                total_time.setText(String.format("%d초", second));
             }
 
             bt_stopwatch_start.setText("시작");
@@ -140,11 +166,15 @@ public class StopWatchFragment extends Fragment {
             baseTime = 0;
             pauseTime = 0;
             status = INIT;
+
+            if(sound_pass == true) {
+                stopMusic();
+            }
         }
 
     }
 
-    private String getTime() {  // 스톱워치 실시간 시간
+    public String getTime() {  // 스톱워치 실시간 시간
         long nowTime = SystemClock.elapsedRealtime();
         long overTime = nowTime - baseTime;
         int convert_second = (int) overTime / 1000;
@@ -162,6 +192,53 @@ public class StopWatchFragment extends Fragment {
         String recTime = String.format("%02d : %02d : %02d", hour, minute, second);
 
         return recTime;
+    }
+
+    public void playMusic() {
+        if(mediaPlayer == null) {
+            if(sound.equals("sound1")) {
+                mediaPlayer = MediaPlayer.create(getActivity(), R.raw.sound1);
+                mediaPlayer.start();
+            }
+            else if(sound.equals("sound2")) {
+                mediaPlayer = MediaPlayer.create(getActivity(), R.raw.sound2);
+                mediaPlayer.start();
+            }
+            else if(sound.equals("sound3")) {
+                mediaPlayer = MediaPlayer.create(getActivity(), R.raw.sound3);
+                mediaPlayer.start();
+            }
+        }
+        else if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.seekTo(pausePosition);
+            mediaPlayer.start();
+        }
+    }
+
+    public void pauseMusic() {
+        Log.d("test", "pauseMusic() 호출됨");
+        if(mediaPlayer != null) {
+            mediaPlayer.pause();
+            pausePosition = mediaPlayer.getCurrentPosition();
+            Log.d("pause check", ":" + pausePosition);
+        }
+    }
+
+    public void stopMusic() {
+        Log.d("test", "stopMusic() 호출됨");
+        if(mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sound = preferences.getString("sound_list", "sound1");
+        sound_pass = preferences.getBoolean("sound_activate", false);
     }
 
     Handler handler = new Handler() {

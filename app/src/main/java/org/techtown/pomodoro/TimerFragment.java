@@ -5,10 +5,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +21,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Timer;
+
 public class TimerFragment extends Fragment {
 
-    public static final int fixed_time = 5;  // 타이머 설정 시간
-    int timerTime = fixed_time;
+    int fixed_time, timerTime;
 
     private TextView total_time, timer;
     private Button bt_timer_start, bt_timer_save;
@@ -34,6 +39,13 @@ public class TimerFragment extends Fragment {
     int status = INIT;
 
     boolean timer_out = false;  // 타이머가 완전히 끝났음을 알리는 장치
+
+    String timer_time;
+
+    MediaPlayer mediaPlayer;
+    int pausePosition;
+    String sound;
+    boolean sound_pass;
 
     @Nullable
     @Override
@@ -54,7 +66,16 @@ public class TimerFragment extends Fragment {
         bt_timer_start.setOnClickListener(onClickListener);
         bt_timer_save.setOnClickListener(onClickListener);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        timer_time = preferences.getString("setting_timer", "30");
+        fixed_time = Integer.parseInt(timer_time);
+        timerTime = fixed_time;
+        sound = preferences.getString("sound_list", "sound1");
+        sound_pass = preferences.getBoolean("sound_activate", false);
+        mediaPlayer = null;
+
         show_time(timerTime);
+        Log.d("test", "onCreateView() 호출됨!");
 
         return rootView;
     }
@@ -101,6 +122,10 @@ public class TimerFragment extends Fragment {
 
                         removeMessages(0);
 
+                        if(sound_pass == true) {
+                            stopMusic();
+                        }
+
                         break;
                     }
                     status = RUN;
@@ -110,6 +135,10 @@ public class TimerFragment extends Fragment {
 
                     sendEmptyMessageDelayed(0, 1000);
                     show_time(timerTime--);
+
+                    if(sound_pass == true) {
+                        playMusic();
+                    }
 
                     break;
 
@@ -122,6 +151,10 @@ public class TimerFragment extends Fragment {
 
                     bt_timer_start.setText("시작");
                     bt_timer_save.setEnabled(true);
+
+                    if(sound_pass == true) {
+                        pauseMusic();
+                    }
 
                     break;
 
@@ -146,6 +179,10 @@ public class TimerFragment extends Fragment {
                     bt_timer_save.setEnabled(false);
 
                     status = INIT;
+
+                    if(sound_pass == true) {
+                        stopMusic();
+                    }
 
                     break;
             }
@@ -174,13 +211,52 @@ public class TimerFragment extends Fragment {
         second = time % 60;
 
         if(hour != 0) {
-            total_time.setText("총 공부 시간  " + String.format("%d시간 %d분 %d초", hour, minute, second));
+            total_time.setText(String.format("%d시간 %d분 %d초", hour, minute, second));
         }
         else if((hour == 0) && (minute != 0)) {
-            total_time.setText("총 공부 시간  " + String.format("%d분 %d초", minute, second));
+            total_time.setText(String.format("%d분 %d초", minute, second));
         }
         else {
-            total_time.setText("총 공부 시간  " + String.format("%d초", second));
+            total_time.setText(String.format("%d초", second));
+        }
+    }
+
+    public void playMusic() {
+        if(mediaPlayer == null) {
+            if(sound.equals("sound1")) {
+                mediaPlayer = MediaPlayer.create(getActivity(), R.raw.sound1);
+                mediaPlayer.start();
+            }
+            else if(sound.equals("sound2")) {
+                mediaPlayer = MediaPlayer.create(getActivity(), R.raw.sound2);
+                mediaPlayer.start();
+            }
+            else if(sound.equals("sound3")) {
+                mediaPlayer = MediaPlayer.create(getActivity(), R.raw.sound3);
+                mediaPlayer.start();
+            }
+        }
+        else if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.seekTo(pausePosition);
+            mediaPlayer.start();
+        }
+    }
+
+    public void pauseMusic() {
+        Log.d("test", "pauseMusic() 호출됨");
+        if(mediaPlayer != null) {
+            mediaPlayer.pause();
+            pausePosition = mediaPlayer.getCurrentPosition();
+            Log.d("pause check", ":" + pausePosition);
+        }
+    }
+
+    public void stopMusic() {
+        Log.d("test", "stopMusic() 호출됨");
+        if(mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 
@@ -192,5 +268,19 @@ public class TimerFragment extends Fragment {
             timerHandler.removeMessages(0);
         }
         isRunning = false;
+    }
+
+    @Override
+    public void onResume() {
+        Log.d("test", "onResume() 호출됨!");
+        super.onResume();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        timer_time = preferences.getString("setting_timer", "30");
+        fixed_time = Integer.parseInt(timer_time);
+        timerTime = fixed_time;
+        sound = preferences.getString("sound_list", "sound1");
+        sound_pass = preferences.getBoolean("sound_activate", false);
+
+        // show_time(timerTime);
     }
 }

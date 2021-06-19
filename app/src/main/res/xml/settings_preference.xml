@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:textColor="#2196F3"
+        android:title="앱 설정">
+
+        <PreferenceScreen
+            android:key="sound_screen"
+            android:summary="비활성화"
+            android:title="소리">
+
+            <PreferenceCategory
+                android:textColor="#2196F3"
+                android:title="소리 설정">
+
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="sound_activate"
+                    android:summary="학습 시 집중에 도움되는 소리가 나옵니다."
+                    android:title="백색 소음 활성화" />
+
+                <ListPreference
+                    android:dependency="sound_activate"
+                    android:entries="@array/sound_list"
+                    android:entryValues="@array/sound_list"
+                    android:key="sound_list"
+                    android:summary="소리_1"
+                    android:title="백색 소음 선택" />
+                
+            </PreferenceCategory>
+
+        </PreferenceScreen>
+
+        <ListPreference
+            android:entries="@array/setting_timer"
+            android:entryValues="@array/setting_timer"
+            android:key="setting_timer"
+            android:summary="타이머 시간 설정"
+            android:title="타이머" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

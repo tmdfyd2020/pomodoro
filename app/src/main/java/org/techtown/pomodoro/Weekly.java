@@ -13,7 +13,7 @@ public class Weekly extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_weekly);
 
         ReturnBtn = findViewById(R.id.ReturnBtn);
         ReturnBtn.setOnClickListener(new View.OnClickListener(){
