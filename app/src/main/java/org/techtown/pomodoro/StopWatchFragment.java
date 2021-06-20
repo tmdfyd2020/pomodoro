@@ -24,6 +24,7 @@ public class StopWatchFragment extends Fragment {
 
     private TextView total_time, stopwatch;
     private Button bt_stopwatch_start, bt_stopwatch_save;
+    private View fragment;
 
     // 상태를 표시하는 '상수' 지정 - 각각의 숫자는 독립적인 개별 '상태' 의미
     private static final int INIT = 0;   // 처음 상태
@@ -41,6 +42,8 @@ public class StopWatchFragment extends Fragment {
     int pausePosition;
     String sound;
     boolean sound_pass;
+    public static boolean check = false;
+
 
     @Nullable
     @Override
@@ -50,6 +53,7 @@ public class StopWatchFragment extends Fragment {
 
         MainActivity activity = (MainActivity) getActivity();
         total_time = (TextView) activity.findViewById(R.id.total);  // 액티비티 누적 시간
+        activity.Change();
 
         stopwatch = (TextView) rootView.findViewById(R.id.stopwatch);  // 실시간 스톱워치 표시
         bt_stopwatch_start = (Button) rootView.findViewById(R.id.bt_stopwatch_start);  // [ 시작 / 중지 ] 버튼
@@ -70,6 +74,7 @@ public class StopWatchFragment extends Fragment {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
             switch (view.getId()) {
                 case R.id.bt_stopwatch_start:
                     startButton();
@@ -97,6 +102,8 @@ public class StopWatchFragment extends Fragment {
                 if(sound_pass == true) {
                     playMusic();
                 }
+                check =true;
+                ((MainActivity) getActivity()).Change();
                 break;
 
             case RUN:  // 스톱 워치가 "실행되고 있는 상태"일 때 [ 중지 ] 버튼을 누르면,
@@ -112,7 +119,8 @@ public class StopWatchFragment extends Fragment {
                 if(sound_pass == true) {
                     pauseMusic();
                 }
-
+                check = false;
+                ((MainActivity) getActivity()).Change();
                 break;
 
             case PAUSE:  // "스톱워치가 중지 된 상태"일 때 [ 계속 ] 버튼을 누르면,
@@ -129,7 +137,8 @@ public class StopWatchFragment extends Fragment {
                 if(sound_pass == true) {
                     playMusic();
                 }
-
+                check =true;
+                ((MainActivity) getActivity()).Change();
                 break;
         }
     }

@@ -9,34 +9,41 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.Inflater;
 
 import lib.kingja.switchbutton.SwitchMultiButton;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView realtime;
+    public TextView realtime;
     private Timer realtimeTimer;
+
 
     SwitchMultiButton switchButton;
 
     StopWatchFragment stopWatchFragment;
     TimerFragment timerFragment;
 
-    public int total_time = 0;
+    public static int total_time = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Topic 1 : 현재 시각 실시간 출력 ##########################################################
         realtime = (TextView) findViewById(R.id.realtime);
@@ -80,6 +87,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // #########################################################################################
+
+        FragmentTransaction fragmentTransaction2 = fm.beginTransaction();
+        fragmentTransaction2.add(R.id.book, new BookFragment());
+        fragmentTransaction2.commit();
+        Fragment book_fr;
+
+
+        book_fr = new BookFragment();
+        fragmentTransaction2 = fm.beginTransaction();
+        fragmentTransaction2.replace(R.id.book, book_fr);
+        fragmentTransaction2.commit();
 
         // Topic 3 : 툴바(상단 메뉴바)에 아이콘 추가 및 화면 이동 ####################################
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -152,4 +170,28 @@ public class MainActivity extends AppCompatActivity {
         realtimeTimer.schedule(timerTask, 500, 3000);
         super.onResume();
     }
+
+    public void Change(){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction1 = fm.beginTransaction();
+        fragmentTransaction1.add(R.id.ani, new AniDefalt());
+        fragmentTransaction1.commit();
+        Fragment ani_fr;
+
+        if(stopWatchFragment.check || TimerFragment.check)
+        {
+        ani_fr = new AniFragment();
+        fragmentTransaction1 = fm.beginTransaction();
+        fragmentTransaction1.replace(R.id.ani, ani_fr);
+        fragmentTransaction1.commit();
+        }
+        else
+        {
+            ani_fr = new AniDefalt();
+            fragmentTransaction1 = fm.beginTransaction();
+            fragmentTransaction1.replace(R.id.ani, ani_fr);
+            fragmentTransaction1.commit();
+        }
+    }
+
 }
