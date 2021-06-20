@@ -152,6 +152,8 @@ public class StopWatchFragment extends Fragment {
 
             MainActivity activity = (MainActivity) getActivity();
             activity.total_time += convert_second;  // 액티비티에 누적 시간 저장
+            activity.saveTime(convert_second);
+
             int time = activity.total_time;
 
             int hour = time / 3600;

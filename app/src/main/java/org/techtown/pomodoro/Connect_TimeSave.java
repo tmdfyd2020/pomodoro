@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,15 +16,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class Connect_Login extends AsyncTask<String, Long, Boolean> {
+public class Connect_TimeSave extends AsyncTask<String, Long, Boolean> {
     private Context mContext = null;
     private int responseCode;
-    private String num_user;
 
-    Login activity;
-    public Connect_Login(Context context){
+    MainActivity mainActivity;
+    public Connect_TimeSave(Context context){
         mContext = context;
-        activity = (Login) Login.context;
+        mainActivity = (MainActivity) MainActivity.context;
     }
 
 
@@ -36,7 +34,7 @@ public class Connect_Login extends AsyncTask<String, Long, Boolean> {
 
     @Override
     protected Boolean doInBackground(String... strings) {
-        String url1= "http://192.168.0.2:8080/pomodoro/index.php/login";
+        String url1= "http://192.168.0.2:8080/pomodoro/index.php/timesave";
         String charset = "UTF-8";
 
         try {
@@ -53,7 +51,8 @@ public class Connect_Login extends AsyncTask<String, Long, Boolean> {
 
             //통신 시 헤더이외에 전송할 데이터(json형태) 만들기
             //현재는 로그인 이기에 아이디 비밀번호만 입력 edittext에서 받아온 값을 저 부분에 넣으면 됨
-            String json = "{'id' : '"+ strings[0]+"', 'passwd' : '"+strings[1]+ "'}";
+
+            String json = "{'num_user' : '"+ strings[0]+"', 'time' : '"+strings[1]+ "'}";
             //json 형태는 각 개체들이 큰 따옴표로 감싸져 있어야하는데 java에선 그렇게 안되는듯 그래서 변경해주는것
             json = json.replace('\'', '\"');
             byte[] input = json.getBytes("utf-8");
@@ -84,12 +83,15 @@ public class Connect_Login extends AsyncTask<String, Long, Boolean> {
                 //200코드는 따로 헤더에만 넘어오게끔 변경할 예정이고 유저의 고유 번호는 받아서
                 //저장해 뒀다가 서버와 다른 기능(시간확인, 시간저장)을 이용할 때 함께 전송함으로써
                 //유저 식별 가능
+
                 JSONObject jObject = new JSONObject(result);
                 responseCode = jObject.getInt("result_code");
                 if(responseCode==200) {
-                    String num_user = jObject.getString("num_user");
-                    Login.num_user= num_user;
                     return true;
+                }
+                else if(responseCode==400)
+                {
+                    return false;
                 }
             }
             else
@@ -116,9 +118,5 @@ public class Connect_Login extends AsyncTask<String, Long, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if(aBoolean)
-             activity.loginSuccess();
-        else
-            activity.loginFailed();
     }
 }

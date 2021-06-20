@@ -79,8 +79,6 @@ public class Connect_Register extends AsyncTask<String, Long, Boolean> {
 
                 result = sb.toString();
 
-                Log.d("N_test", result);
-
                 //받아온 데이터 확인, 로그인 성공 시에는 200코드와 유저의 고유 번호가 넘어옴
                 //200코드는 따로 헤더에만 넘어오게끔 변경할 예정이고 유저의 고유 번호는 받아서
                 //저장해 뒀다가 서버와 다른 기능(시간확인, 시간저장)을 이용할 때 함께 전송함으로써
@@ -95,21 +93,6 @@ public class Connect_Register extends AsyncTask<String, Long, Boolean> {
             {
                 return false;
             }
-
-            if(connection.getResponseCode() == connection.HTTP_OK)
-            {
-                Log.d("N_test", "성공");
-                Log.d("N_test", Integer.toString(connection.getResponseCode()));
-                Log.d("N_test", connection.getResponseMessage());
-            }
-            else {
-                Log.d("N_test", "실패");
-                Log.d("N_test", Integer.toString(connection.getResponseCode()));
-                Log.d("N_test", connection.getResponseMessage());
-            }
-
-
-
         } catch (MalformedURLException e){
             Log.d("N_test","fail Mal");
             e.printStackTrace();

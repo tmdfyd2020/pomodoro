@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,17 +32,19 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static int total_time = 0;
-    public String num_user;
+    public static String num_user;
+    public static String date;
+    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context = this;
         //로그인 페이지로부터 정보 가져오기 ##########################################################
         Intent intent = getIntent();
         num_user = intent.getStringExtra("num_user");
-        Log.d("N_test", num_user);
 
 
         // Topic 1 : 현재 시각 실시간 출력 ##########################################################
@@ -104,6 +107,12 @@ public class MainActivity extends AppCompatActivity {
         // ActionBar actionbar = getSupportActionBar();
         // #########################################################################################
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timeCheck();
+            }
+        }, 500);
     }
 
     // Topic 1 : 현재 시각 실시간 출력 ##############################################################
@@ -114,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy년 MM월 dd일   hh : mm : ss ");
             String dateString = formatter.format(rightNow);
             realtime.setText(dateString);
-
+            formatter = new SimpleDateFormat("yyyyMMdd");
+            date = formatter.format(rightNow);
         }
     };
     class MainTimerTask extends TimerTask {
@@ -191,5 +201,37 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction1.replace(R.id.ani, ani_fr);
             fragmentTransaction1.commit();
         }
+    }
+
+    public void timeCheck()
+    {
+        Connect_TimeCheck task = new Connect_TimeCheck(this);
+        task.execute(num_user,date);
+    }
+
+    public void setMyTime()
+    {
+        int time = total_time;
+
+        int hour = time / 3600;
+        int minute = (time / 60) % 60;
+        int second = time % 60;
+
+        TextView total_time = (TextView) findViewById(R.id.total);
+        if(hour != 0) {
+            total_time.setText(String.format("%d시간 %d분 %d초", hour, minute, second));
+        }
+        else if((hour == 0) && (minute != 0)) {
+            total_time.setText(String.format("%d분 %d초", minute, second));
+        }
+        else {
+            total_time.setText(String.format("%d초", second));
+        }
+    }
+
+    public void saveTime(int convert_time)
+    {
+        Connect_TimeSave task = new Connect_TimeSave(this);
+        task.execute(num_user, String.valueOf(convert_time));
     }
 }

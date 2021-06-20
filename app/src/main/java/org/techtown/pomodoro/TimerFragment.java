@@ -208,6 +208,7 @@ public class TimerFragment extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         activity.total_time += timer_time;
         int time = activity.total_time;
+        activity.saveTime(timer_time);
 
         hour = time / 3600;
         minute = (time / 60) % 60;
