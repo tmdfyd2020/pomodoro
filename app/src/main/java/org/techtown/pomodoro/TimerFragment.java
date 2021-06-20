@@ -39,12 +39,11 @@ public class TimerFragment extends Fragment {
     int status = INIT;
 
     boolean timer_out = false;  // 타이머가 완전히 끝났음을 알리는 장치
-    public static boolean check = false; //ani handle 위한 변수
-    String timer_time;
+
+    String timer_time, sound;
 
     MediaPlayer mediaPlayer;
     int pausePosition;
-    String sound;
     boolean sound_pass;
 
     @Nullable
@@ -55,7 +54,6 @@ public class TimerFragment extends Fragment {
 
         MainActivity activity = (MainActivity) getActivity();
         total_time = (TextView) activity.findViewById(R.id.total);  // 액티비티 누적 시간
-        activity.Change();
 
         timer = (TextView)  rootView.findViewById(R.id.timer);
         bt_timer_start = (Button) rootView.findViewById(R.id.bt_timer_start);
@@ -76,7 +74,6 @@ public class TimerFragment extends Fragment {
         mediaPlayer = null;
 
         show_time(timerTime);
-        Log.d("test", "onCreateView() 호출됨!");
 
         return rootView;
     }
@@ -88,15 +85,9 @@ public class TimerFragment extends Fragment {
                 case R.id.bt_timer_start:  // [ 시작 / 중지 ] 버튼을 누를 때,
                     if(status == INIT || status == PAUSE) {  // 타이머가 돌아가고 있지 않은 상태라면("초기 상태", "중지 상태"), 타이머를 "실행"시키기
                         timerHandler.sendEmptyMessage(0);
-                        //ani 움직이기
-                        check =true;
-                        ((MainActivity) getActivity()).Change();
                     }
                     else if(status == RUN) {  // 타이머가 "실행" 중이라면, 타이머를 중지 시키기
                         timerHandler.sendEmptyMessage(1);
-                        //ani 멈추기
-                        check = false;
-                        ((MainActivity) getActivity()).Change();
                     }
 
                     break;
@@ -279,7 +270,6 @@ public class TimerFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.d("test", "onResume() 호출됨!");
         super.onResume();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         timer_time = preferences.getString("setting_timer", "30");
@@ -288,6 +278,6 @@ public class TimerFragment extends Fragment {
         sound = preferences.getString("sound_list", "sound1");
         sound_pass = preferences.getBoolean("sound_activate", false);
 
-        // show_time(timerTime);
+        show_time(timerTime);
     }
 }
