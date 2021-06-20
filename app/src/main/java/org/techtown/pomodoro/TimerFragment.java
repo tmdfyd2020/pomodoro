@@ -39,7 +39,7 @@ public class TimerFragment extends Fragment {
     int status = INIT;
 
     boolean timer_out = false;  // 타이머가 완전히 끝났음을 알리는 장치
-
+    public static boolean check = false; //ani handle 위한 변수
     String timer_time, sound;
 
     MediaPlayer mediaPlayer;
@@ -137,7 +137,10 @@ public class TimerFragment extends Fragment {
                     if(sound_pass == true) {
                         playMusic();
                     }
-
+                    if(check==false){
+                    check =true;
+                    ((MainActivity) getActivity()).Change();
+                    }
                     break;
 
                 case 1:  // 타이머가 "실행" 상태에서 타이머를 중지 시켰을 때,
@@ -153,7 +156,8 @@ public class TimerFragment extends Fragment {
                     if(sound_pass == true) {
                         pauseMusic();
                     }
-
+                    check =false;
+                    ((MainActivity) getActivity()).Change();
                     break;
 
                 case 2:  // [ 저장 / 초기화 ] 버튼을 누를 때,
@@ -181,7 +185,8 @@ public class TimerFragment extends Fragment {
                     if(sound_pass == true) {
                         stopMusic();
                     }
-
+                    check =false;
+                    ((MainActivity) getActivity()).Change();
                     break;
             }
         }

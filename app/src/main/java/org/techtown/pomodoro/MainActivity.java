@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     SwitchMultiButton switchButton;
 
-    public int total_time = 0;
+    public static int total_time = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // #########################################################################################
+
+        FragmentTransaction fragmentTransaction2 = fm.beginTransaction();
+        fragmentTransaction2.add(R.id.book, new BookFragment());
+        fragmentTransaction2.commit();
+        Fragment book_fr;
+
+
+        book_fr = new BookFragment();
+        fragmentTransaction2 = fm.beginTransaction();
+        fragmentTransaction2.replace(R.id.book, book_fr);
+        fragmentTransaction2.commit();
 
         // Topic 3 : 툴바(상단 메뉴바)에 아이콘 추가 및 화면 이동 ####################################
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -148,5 +159,28 @@ public class MainActivity extends AppCompatActivity {
         realtimeTimer = new Timer();  // 타이머를 화면 이동시 새로 생성해주지 않으면 오류
         realtimeTimer.schedule(timerTask, 500, 3000);
         super.onResume();
+    }
+
+    public void Change(){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction1 = fm.beginTransaction();
+        fragmentTransaction1.replace(R.id.ani, new AniDefalt());
+        fragmentTransaction1.commit();
+        Fragment ani_fr;
+
+        if(StopWatchFragment.check || TimerFragment.check)
+        {
+            ani_fr = new AniFragment();
+            fragmentTransaction1 = fm.beginTransaction();
+            fragmentTransaction1.replace(R.id.ani, ani_fr);
+            fragmentTransaction1.commit();
+        }
+        else
+        {
+            ani_fr = new AniDefalt();
+            fragmentTransaction1 = fm.beginTransaction();
+            fragmentTransaction1.replace(R.id.ani, ani_fr);
+            fragmentTransaction1.commit();
+        }
     }
 }
