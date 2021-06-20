@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,12 +29,20 @@ public class MainActivity extends AppCompatActivity {
 
     SwitchMultiButton switchButton;
 
+
     public static int total_time = 0;
+    public String num_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //로그인 페이지로부터 정보 가져오기 ##########################################################
+        Intent intent = getIntent();
+        num_user = intent.getStringExtra("num_user");
+        Log.d("N_test", num_user);
+
 
         // Topic 1 : 현재 시각 실시간 출력 ##########################################################
         realtime = (TextView) findViewById(R.id.realtime);
