@@ -40,11 +40,10 @@ public class TimerFragment extends Fragment {
 
     boolean timer_out = false;  // 타이머가 완전히 끝났음을 알리는 장치
 
-    String timer_time;
+    String timer_time, sound;
 
     MediaPlayer mediaPlayer;
     int pausePosition;
-    String sound;
     boolean sound_pass;
 
     @Nullable
@@ -75,7 +74,6 @@ public class TimerFragment extends Fragment {
         mediaPlayer = null;
 
         show_time(timerTime);
-        Log.d("test", "onCreateView() 호출됨!");
 
         return rootView;
     }
@@ -272,7 +270,6 @@ public class TimerFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.d("test", "onResume() 호출됨!");
         super.onResume();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         timer_time = preferences.getString("setting_timer", "30");
@@ -281,6 +278,6 @@ public class TimerFragment extends Fragment {
         sound = preferences.getString("sound_list", "sound1");
         sound_pass = preferences.getBoolean("sound_activate", false);
 
-        // show_time(timerTime);
+        show_time(timerTime);
     }
 }

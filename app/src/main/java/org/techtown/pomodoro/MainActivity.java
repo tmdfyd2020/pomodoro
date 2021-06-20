@@ -28,9 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     SwitchMultiButton switchButton;
 
-    StopWatchFragment stopWatchFragment;
-    TimerFragment timerFragment;
-
     public int total_time = 0;
 
     @Override
