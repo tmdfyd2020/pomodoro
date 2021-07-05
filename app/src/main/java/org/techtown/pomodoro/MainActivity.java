@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     SwitchMultiButton switchButton;
 
-
     public static int total_time = 0;
     public static String num_user;
     public static String date;
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         context = this;
-        //로그인 페이지로부터 정보 가져오기 ##########################################################
+        // 로그인 페이지로부터 정보 가져오기 ##########################################################
         Intent intent = getIntent();
         num_user = intent.getStringExtra("num_user");
 
